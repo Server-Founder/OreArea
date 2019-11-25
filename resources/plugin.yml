@@ -1,0 +1,45 @@
+name: OreArea
+main: ore.area.AreaMainClass
+version: 1.0.0
+api:
+  - 1.0.9
+author: 若水
+load: POSTWORLD
+
+permissions:
+  ore.area.spawn:
+    description: "回城"
+    default: true
+  ore.area.kq:
+    description: "矿区主命令"
+    default: true
+  ore.area.kq.pos:
+    description: "选择坐标"
+    default: op
+  ore.area.kq.create:
+    description: "创建矿区"
+    default: op
+  ore.area.kq.open:
+    description: "开启矿区"
+    default: op
+  ore.area.kq.close:
+    description: "关闭矿区"
+    default: op
+  ore.area.kq.transfer:
+    description: "传送矿区"
+    default: true
+  ore.area.kq.setprice:
+    description: "设置传送到一个矿区价格"
+    default: op
+  ore.area.kq.settransfer:
+    description: "设置矿区传送点"
+    default: op
+  ore.area.kq.setmoney:
+    description: "设置矿区解锁价格"
+    default: op
+
+
+
+
+
+
