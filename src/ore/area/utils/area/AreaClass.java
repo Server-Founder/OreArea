@@ -116,7 +116,13 @@ public class AreaClass {
                 Config config = new Config(AreaMainClass.getInstance().getAreaFile(name),Config.YAML);
                 config.set("level",pos.getLevel().getFolderName());
                 config.set("pos",Tools.getPosMap(pos));
-                config.set("transfer",Tools.getPosMap((pos.getStartX() + pos.getEndX()) / 2,(pos.getEndY()),(pos.getStartZ() + pos.getEndZ()) / 2));
+                int y;
+                if(pos.getEndY() > pos.getStartY()){
+                    y = pos.getEndY();
+                }else{
+                    y = pos.getStartY();
+                }
+                config.set("transfer",Tools.getPosMap((pos.getStartX() + pos.getEndX()) / 2,(y+1),(pos.getStartZ() + pos.getEndZ()) / 2));
                 config.save();
                 AreaClass cn = getClassByConfig(name,config);
                 if(cn != null){
@@ -235,11 +241,11 @@ public class AreaClass {
             for(Object s:map.keySet()){
                 blocks.add(Tools.getBlockClassByMap(String.valueOf(s), (int)map.get(s)));
             }
-            AreaClass c =  new AreaClass(config.getInt("area.level"),name,pos,money,transfer,key,config.getInt("resetTime(s)"),blocks);
+            AreaClass c =  new AreaClass(config.getInt("areaLevel"),name,pos,money,transfer,key,config.getInt("resetTime(s)"),blocks);
             c.setMessage(config.getString("message"));
             c.setSubMessage(config.getString("subMessage"));
             c.setButtonImage(config.getString("buttonImage"));
-            c.setTransferMoney(config.getDouble("transfer.money"));
+            c.setTransferMoney(config.getDouble("transferMoney"));
             return c;
         }
         return null;
@@ -260,11 +266,12 @@ public class AreaClass {
     public void save(){
         Config config = new Config(AreaMainClass.getInstance().getAreaFile(name),Config.YAML);
         config.set("level",pos.getLevel().getFolderName());
+        config.set("areaLevel",level);
         config.set("pos",Tools.getPosMap(pos));
         config.set("price",money);
         config.set("resetTime(s)",reset);
         config.set("transfer",Tools.getPosMap((int) transfer.x,(int) transfer.y,(int) transfer.z));
-        config.set("transfer.money",transferMoney);
+        config.set("transferMoney",transferMoney);
         config.set("key",key);
         config.set("message",message);
         config.set("subMessage",subMessage);

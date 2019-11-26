@@ -2,10 +2,12 @@ package ore.area.utils.task;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.particle.FlameParticle;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.Task;
 import ore.area.AreaMainClass;
+import ore.area.utils.BossAPI;
 import ore.area.utils.Tools;
 import ore.area.utils.area.AreaClass;
 
@@ -19,12 +21,11 @@ public class PlayerTransferTask extends Task {
     private Player player;
     private int time;
     private AreaClass aClass;
-    private boolean can;
-    public PlayerTransferTask(Player player, int time, AreaClass aClass,boolean can){
+
+    public PlayerTransferTask(Player player, int time, AreaClass aClass){
         this.player = player;
         this.time = time;
         this.aClass = aClass;
-        this.can = can;
     }
     @Override
     public void onRun(int i) {
@@ -35,19 +36,16 @@ public class PlayerTransferTask extends Task {
             }
             if(time > 0){
                 time--;
-                if(can){
-                    LinkedList<double[]> pos = Tools.showParticle(time);
-                    for (double[] p : pos){
-                        player.getLevel().addParticle(new FlameParticle(
-                                new Vector3(p[0] + player.getX(),p[1]+player.getY()+2,p[2]+player.getZ())));
-                    }
-                }
                 String title = AreaMainClass.getLang("tansfer.area.message")
                         .replace("{name}",aClass.getName());
                 String sub =  AreaMainClass.getLang("tansfer.area.sub.message").replace("{s}"
                         ,time+"");
                 Tools.sendMessage(player,title,sub,AreaMainClass.getInstance().getTransferMessageType());
             }else{
+                if(AreaMainClass.getInstance().bossMessage.containsKey(player)){
+                    BossAPI api = new BossAPI(player);
+                    api.remove();
+                }
                 AreaMainClass.getInstance().transfer.remove(player.getName());
                 player.teleport(aClass.getTransfer());
                 if(AreaMainClass.getInstance().canSendTransferBroadCastMessage()){

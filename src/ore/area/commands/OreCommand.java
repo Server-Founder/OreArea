@@ -7,9 +7,7 @@ import cn.nukkit.utils.TextFormat;
 import ore.area.AreaMainClass;
 import ore.area.commands.area.*;
 import ore.area.commands.player.TeleportSubCommand;
-import ore.area.commands.setting.MoneySubCommand;
-import ore.area.commands.setting.PriceSubCommand;
-import ore.area.commands.setting.TransferSubCommand;
+import ore.area.commands.setting.*;
 import ore.area.windows.CreateWindow;
 
 import java.util.ArrayList;
@@ -25,8 +23,8 @@ public class OreCommand extends PluginCommand<AreaMainClass> {
     private final ConcurrentHashMap<String, Integer> SubCommand = new ConcurrentHashMap<>();
 
     public OreCommand(AreaMainClass plugin) {
-        super("OreArea",plugin);
-        this.setAliases(new String[]{"矿区", "area","kq"});
+        super("kq",plugin);
+        this.setAliases(new String[]{"矿区"});
         this.setPermission("ore.area.kq");
         this.setDescription("矿区主命令");
         this.loadSubCommand(new CloseSubCommand(plugin));
@@ -38,6 +36,8 @@ public class OreCommand extends PluginCommand<AreaMainClass> {
         this.loadSubCommand(new MoneySubCommand(plugin));
         this.loadSubCommand(new PriceSubCommand(plugin));
         this.loadSubCommand(new TransferSubCommand(plugin));
+        this.loadSubCommand(new DeleteSubCommand(plugin));
+        this.loadSubCommand(new RefreshSubCommand(plugin));
     }
 
     private void loadSubCommand(SubCommand cmd) {
@@ -90,6 +90,8 @@ public class OreCommand extends PluginCommand<AreaMainClass> {
                     sender.sendMessage("§a/kq settransfer <名称> §7将脚底坐标设置为矿区传送点");
                     sender.sendMessage("§a/kq setprice <名称> <价格> §7设置传送到矿区的价格");
                     sender.sendMessage("§a/kq setmoney <名称> <价格> §7设置解锁矿区价格");
+                    sender.sendMessage("§a/kq 刷新 <名称> §7刷新矿区");
+                    sender.sendMessage("§a§l >> §eHelp for OreArea 当前页: 2 共计 2页 §a<<");
                     return true;
                 }
             }
@@ -99,6 +101,8 @@ public class OreCommand extends PluginCommand<AreaMainClass> {
             sender.sendMessage("§a/kq pos2 §7设置矿区第二点");
             sender.sendMessage("§a/kq create <名称> §7创建矿区");
             sender.sendMessage("§a/kq close <名称> §7关闭一个矿区");
+            sender.sendMessage("§a/kq delete <名称> §7删除矿区");
+            sender.sendMessage("§a§l >> §eHelp for OreArea 当前页: 1 共计 2页 §a<<");
         }
         return true;
     }

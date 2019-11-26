@@ -11,6 +11,7 @@ import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.particle.FlameParticle;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.Task;
@@ -20,8 +21,10 @@ import ore.area.events.PlayerBuyAreaEvent;
 import ore.area.events.PlayerJoinAreaEvent;
 import ore.area.events.PlayerQuitAreaEvent;
 import ore.area.events.PlayerTransferAreaEvent;
+import ore.area.utils.BossAPI;
 import ore.area.utils.Tools;
 import ore.area.utils.area.AreaClass;
+import ore.area.utils.task.ParticleTask;
 import ore.area.utils.task.PlayerLoadTask;
 import ore.area.utils.task.PlayerTransferTask;
 
@@ -43,9 +46,15 @@ public class ListenerEvents implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
         Block block = event.getBlock();
-        if(Tools.getPlayerTouchArea(block) == null){
-            if(Tools.canInAreaLevel(block)){
-                event.setCancelled();
+        Player player = event.getPlayer();
+        if(player.isOp()){
+            return;
+        }
+        if(AreaMainClass.getInstance().canProtectionLevel()) {
+            if (Tools.getPlayerTouchArea(block) == null) {
+                if (Tools.canInAreaLevel(block)) {
+                    event.setCancelled();
+                }
             }
         }
     }
@@ -53,7 +62,11 @@ public class ListenerEvents implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
         Block block = event.getBlock();
-        if(Tools.getPlayerTouchArea(block) == null){
+        Player player = event.getPlayer();
+        if(player.isOp()){
+            return;
+        }
+        if(AreaMainClass.getInstance().canProtectionLevel()){
             if(Tools.canInAreaLevel(block)){
                 event.setCancelled();
             }
@@ -72,7 +85,11 @@ public class ListenerEvents implements Listener {
                 return;
             }
             AreaMainClass.getInstance().transfer.add(player.getName());
-            Server.getInstance().getScheduler().scheduleRepeatingTask(new PlayerTransferTask(player,AreaMainClass.getInstance().getTransferTime(),aClass,can),20);
+            Position pos = player.getPosition();
+            if(can){
+                Server.getInstance().getScheduler().scheduleRepeatingTask(new ParticleTask(player.getName(),pos),2);
+            }
+            Server.getInstance().getScheduler().scheduleRepeatingTask(new PlayerTransferTask(player,AreaMainClass.getInstance().getTransferTime(),aClass),20);
         }
     }
 
@@ -86,6 +103,15 @@ public class ListenerEvents implements Listener {
                 AreaMainClass.getInstance().transfer.remove(player.getName());
                 Tools.sendMessage(player,AreaMainClass.getLang("transfer.area.cancel"),
                         "",AreaMainClass.getInstance().getMessageType());
+                Server.getInstance().getScheduler().scheduleDelayedTask(new Task() {
+                    @Override
+                    public void onRun(int i) {
+                        if(AreaMainClass.getInstance().bossMessage.containsKey(player)){
+                            BossAPI api = new BossAPI(player);
+                            api.remove();
+                        }
+                    }
+                },40);
             }
 
         }
@@ -103,6 +129,15 @@ public class ListenerEvents implements Listener {
                 String sub = AreaMainClass.getLang("join.area.sub.title");
                 sub = sub.replace("{sub}",areaClass.getSubMessage());
                 Tools.sendMessage(player,title,sub,AreaMainClass.getInstance().getMessageType());
+                Server.getInstance().getScheduler().scheduleDelayedTask(new Task() {
+                    @Override
+                    public void onRun(int i) {
+                        if(AreaMainClass.getInstance().bossMessage.containsKey(player)){
+                            BossAPI api = new BossAPI(player);
+                            api.remove();
+                        }
+                    }
+                },40);
             }
         }
     }
@@ -136,6 +171,15 @@ public class ListenerEvents implements Listener {
             }
             String title = AreaMainClass.getLang("player.buy.area.success").replace("{name}",areaClass.getName());
             Tools.sendMessage(player,title,"",AreaMainClass.getInstance().getMessageType());
+            Server.getInstance().getScheduler().scheduleDelayedTask(new Task() {
+                @Override
+                public void onRun(int i) {
+                    if(AreaMainClass.getInstance().bossMessage.containsKey(player)){
+                        BossAPI api = new BossAPI(player);
+                        api.remove();
+                    }
+                }
+            },40);
         }
     }
 

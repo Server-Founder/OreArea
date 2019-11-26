@@ -1,5 +1,5 @@
 level: "world"
-area.level: 1
+areaLevel: 1
 pos:
   startX: 0
   startY: 0
@@ -13,7 +13,7 @@ transfer:
   x: 0
   y: 0
   z: 0
-transfer.money: 100.0
+transferMoney: 100.0
 key: true
 message: "§a新手矿区\n\n 一切发家致富的开始?\n\n 主要物资:\n\n>> 石头\n\n>> 木头"
 subMessage: "一切的开始..."

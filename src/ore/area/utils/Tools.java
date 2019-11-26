@@ -1,12 +1,10 @@
 package ore.area.utils;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.DummyBossBar;
 import ore.area.AreaMainClass;
 import ore.area.utils.area.AreaClass;
@@ -99,28 +97,17 @@ public class Tools {
         return false;
     }
 
-    public static LinkedList<double[]> showParticle(int s) {
-        double x,z,y;
+    public static LinkedList<double[]> showParticle(double s) {
+        double x,z;
         LinkedList<double[]> pos = new LinkedList<>();
-        LinkedList<double[]> a = new LinkedList<>();
-        double rr = s * 0.2;
-        for(int i =0;i<=90;i+=10){
-            x = rr * Math.cos(Math.toRadians(i));
-            y = rr * Math.sin(Math.toRadians(i));
-            a.add(new double[]{x,y});
-            a.add(new double[]{x,-y});
-            a.add(new double[]{-x,y});
-            a.add(new double[]{-x,-y});
-        }
-        for(double[] b: a){
-            for(int i=0;i<=90;i+=10){
-                x = (s-b[0]) * Math.cos(Math.toRadians(i));
-                z = (s-b[0]) * Math.sin(Math.toRadians(i));
-                pos.add(new double[]{x,b[1],z});
-                pos.add(new double[]{-z,b[1],x});
-                pos.add(new double[]{-x,b[1],-z});
-                pos.add(new double[]{z,b[1],-x});
-            }
+        //密度控制
+        for(int i=0;i<=90;i+=3){
+            x = s * Math.cos(Math.toRadians(i));
+            z = s * Math.sin(Math.toRadians(i));
+            pos.add(new double[]{x,0,z});
+            pos.add(new double[]{-z,0,x});
+            pos.add(new double[]{-x,0,-z});
+            pos.add(new double[]{z,0,-x});
         }
         return pos;
     }
@@ -191,16 +178,8 @@ public class Tools {
                 player.sendTitle(message,sub);
                 break;
             case "boss":
-                bossBar bar = new bossBar(player,0xbb075);
-                bar.setLength(0);
-                bar.setText(message+sub);
-                player.createBossBar(bar.build());
-                Server.getInstance().getScheduler().scheduleDelayedTask(new Task() {
-                    @Override
-                    public void onRun(int i) {
-                        player.removeBossBar(bar.getBossBarId());
-                    }
-                },60);
+                BossAPI api = new BossAPI(player);
+                api.createBossBar(message+sub);
                 break;
             default:break;
         }

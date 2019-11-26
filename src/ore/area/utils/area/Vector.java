@@ -64,9 +64,6 @@ public class Vector implements Cloneable{
             this.endZ = this.startZ;
             this.startZ = temp;
         }
-
-        this.endX++;
-        this.endZ++;
     }
 
     public Position getPos1(){

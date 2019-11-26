@@ -3,7 +3,6 @@ package ore.area.commands.area;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.utils.TextFormat;
 import ore.area.AreaMainClass;
 import ore.area.commands.SubCommand;
 import ore.area.utils.area.AreaClass;

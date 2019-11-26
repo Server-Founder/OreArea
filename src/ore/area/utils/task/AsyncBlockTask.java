@@ -33,7 +33,9 @@ public class AsyncBlockTask extends AsyncTask {
         for(int x = pos.getStartX(); x <= pos.getEndX();x++){
             for(int y = pos.getStartY(); y <= pos.getEndY();y++){
                 for(int z = pos.getStartZ(); z <= pos.getEndZ();z++){
-                    l.setChunk(x >> 4,z>> 4);
+                    if(!l.loadChunk(x,z)){
+                        l.generateChunk(x,z);
+                    }
                     boolean b = false;
                     for(BlockClass block:aClass.getBlocks()){
                         int a = new Random().nextInt(100);

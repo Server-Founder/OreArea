@@ -1,15 +1,14 @@
 name: OreArea
 main: ore.area.AreaMainClass
-version: 1.0.0
+version: 1.0.4
 api:
   - 1.0.9
 author: 若水
 load: POSTWORLD
+loadbefore:
+  - AutoUpData
 
 permissions:
-  ore.area.spawn:
-    description: "回城"
-    default: true
   ore.area.kq:
     description: "矿区主命令"
     default: true
@@ -36,6 +35,12 @@ permissions:
     default: op
   ore.area.kq.setmoney:
     description: "设置矿区解锁价格"
+    default: op
+  ore.area.kq.delete:
+    description: "删除矿区"
+    default: op
+  ore.area.kq.refresh:
+    description: "刷新矿区"
     default: op
 
 

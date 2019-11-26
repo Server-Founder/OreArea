@@ -2,17 +2,17 @@ package ore.area;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Position;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import ore.area.commands.OreCommand;
-import ore.area.commands.SpawnCommand;
+import ore.area.utils.BossBar;
 import ore.area.utils.area.AreaClass;
 import ore.area.utils.loadMoney;
 import ore.area.utils.task.AreaLoadTask;
+import ore.area.utils.task.BossBarMessageTask;
 import ore.area.windows.ListenerWindow;
+import updata.AutoData;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,6 +43,8 @@ public class AreaMainClass extends PluginBase {
 
     public LinkedHashMap<String,String> canJoin = new LinkedHashMap<>();
 
+    public LinkedHashMap<Player, BossBar> bossMessage = new LinkedHashMap<>();
+
 
     public LinkedList<String> transfer = new LinkedList<>();
 
@@ -58,6 +60,11 @@ public class AreaMainClass extends PluginBase {
 
     @Override
     public void onEnable() {
+        if(Server.getInstance().getPluginManager().getPlugin("AutoUpData") != null){
+            if(AutoData.defaultUpData(this,getFile(),"DreamServer","OreArea")){
+                return;
+            }
+        }
         instance = this;
         saveDefaultConfig();
         reloadConfig();
@@ -81,9 +88,9 @@ public class AreaMainClass extends PluginBase {
         timeLoad.addAll(getConfig().getStringList("刷新矿区时间段"));
 
         getServer().getCommandMap().register("OreArea", new OreCommand(this));
-        getServer().getCommandMap().register("OreArea", new SpawnCommand("spawn"));
         this.getServer().getPluginManager().registerEvents(new ListenerWindow(),this);
         this.getServer().getPluginManager().registerEvents(new ListenerEvents(),this);
+        this.getServer().getScheduler().scheduleRepeatingTask(new BossBarMessageTask(),20);
         money = new loadMoney();
         readAllFiles();
         readAllPlayer();
@@ -189,6 +196,13 @@ public class AreaMainClass extends PluginBase {
      * */
     boolean canShowTransfer(){
         return getConfig().getBoolean("是否显示粒子");
+    }
+
+    /**
+     * 获取是否保护矿区世界
+     * */
+    boolean canProtectionLevel(){
+        return getConfig().getBoolean("是否保护矿区",false);
     }
 
 
